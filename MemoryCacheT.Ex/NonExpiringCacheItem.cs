@@ -29,6 +29,11 @@
             get { return _cacheItemValue; }
         }
 
+        public override TValue PeekValue
+        {
+            get { return _cacheItemValue; }
+        }
+
         public override bool IsExpired
         {
             get { return false; }
