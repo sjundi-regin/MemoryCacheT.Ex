@@ -26,9 +26,19 @@ namespace MemoryCacheT.Ex
         bool IsExpired { get; }
 
         /// <summary>
+        /// Checks if cache item is about to expire.
+        /// </summary>
+        bool IsAboutToExpire { get; }
+
+        /// <summary>
         /// Invoked when item is expired.
         /// </summary>
         void Expire();
+
+        /// <summary>
+        /// Invoked when item is about to expire.
+        /// </summary>
+        void AboutToExpire();
 
         /// <summary>
         /// Invoked when item is removed.
@@ -39,6 +49,11 @@ namespace MemoryCacheT.Ex
         /// Defines a reference to a method that is invoked when a cache entry is about to be removed from the cache.
         /// </summary>
         Action<TValue, DateTime> OnExpire { get; set; }
+
+        /// <summary>
+        /// Defines a reference to a method that is invoked when a cache entry is about to be expired in the cache.
+        /// </summary>
+        Action<TValue, DateTime> OnAboutToExpire { get; set; }
 
         /// <summary>
         /// Defines a reference to a method that is invoked when a cache entry is about to expire.

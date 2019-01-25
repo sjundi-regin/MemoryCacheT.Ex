@@ -11,8 +11,8 @@ namespace MemoryCacheT.Ex
         private readonly TimeSpan _cacheInterval;
         private DateTime? _lastAccessDateTime;
 
-        internal SlidingExpirationCacheItem(IDateTimeProvider dateTimeProvider, TValue value, TimeSpan cacheInterval)
-            : base(dateTimeProvider, value)
+        internal SlidingExpirationCacheItem(IDateTimeProvider dateTimeProvider, TValue value, TimeSpan cacheInterval, int notificationTime = int.MinValue)
+            : base(dateTimeProvider, value, notificationTime)
         {
             _cacheInterval = cacheInterval;
             _lastAccessDateTime = dateTimeProvider.UtcNow;
@@ -23,14 +23,15 @@ namespace MemoryCacheT.Ex
         /// </summary>
         /// <param name="value">Data for the cache item.</param>
         /// <param name="cacheInterval">Interval that will be used to determine if cache item has expired.</param>
-        public SlidingExpirationCacheItem(TValue value, TimeSpan cacheInterval)
-            : this(DateTimeProvider.Instance, value, cacheInterval) { }
+        public SlidingExpirationCacheItem(TValue value, TimeSpan cacheInterval, int notificationTime = int.MinValue)
+            : this(DateTimeProvider.Instance, value, cacheInterval, notificationTime) { }
 
         public override ICacheItem<TValue> CreateNewCacheItem(TValue value)
         {
-            return new SlidingExpirationCacheItem<TValue>(value, _cacheInterval)
+            return new SlidingExpirationCacheItem<TValue>(value, _cacheInterval, _notificationTime)
                 {
                     OnExpire = OnExpire,
+                    OnAboutToExpire = OnAboutToExpire,
                     OnRemove = OnRemove
                 };
         }
@@ -47,6 +48,11 @@ namespace MemoryCacheT.Ex
         public override bool IsExpired
         {
             get { return _dateTimeProvider.UtcNow >= (_lastAccessDateTime + _cacheInterval); }
+        }
+
+        public override bool IsAboutToExpire
+        {
+            get { return _dateTimeProvider.UtcNow >= (_lastAccessDateTime + _cacheInterval); } // TODO: Implement time-logic
         }
     }
 }

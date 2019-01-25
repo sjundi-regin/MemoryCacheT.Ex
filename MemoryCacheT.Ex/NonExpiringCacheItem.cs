@@ -6,7 +6,7 @@
     /// <typeparam name="TValue">Type of value in cache item.</typeparam>
     public class NonExpiringCacheItem<TValue> : CacheItem<TValue>
     {
-        internal NonExpiringCacheItem(IDateTimeProvider dateTimeProvider, TValue value) : base(dateTimeProvider, value) { }
+        internal NonExpiringCacheItem(IDateTimeProvider dateTimeProvider, TValue value) : base(dateTimeProvider, value, int.MinValue) { }
 
         /// <summary>
         /// Initializes a new instance of the NonExpiringCacheItem&lt;TValue&gt; class.
@@ -19,6 +19,7 @@
             return new NonExpiringCacheItem<TValue>(value)
                 {
                     OnExpire = OnExpire,
+                    OnAboutToExpire = OnAboutToExpire,
                     OnRemove = OnRemove
                 };
         }
@@ -29,6 +30,11 @@
         }
 
         public override bool IsExpired
+        {
+            get { return false; }
+        }
+
+        public override bool IsAboutToExpire
         {
             get { return false; }
         }
