@@ -1,26 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<?xml version="1.0"?>
+<package >
   <metadata>
-    <id>MemoryCacheT</id>
-    <version>0.2.3</version>
-    <authors>Ufuk Hacıoğulları</authors>
-    <owners>Ufuk Hacıoğulları</owners>
+    <id>MemoryCacheT.Ex</id>
+    <version>0.0.1</version>
+    <authors>Anders Ågren and Daniel Lindström</authors>
+    <owners>Anders Ågren and Daniel Lindström</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/motorprinsen/MemoryCacheT.Ex</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>MemoryCacheT is a simple in-memory cache with eviction options.</description>
-    <projectUrl>https://github.com/uhaciogullari/MemoryCacheT</projectUrl>
-    <tags>caching</tags>
-    <summary>
-      MemoryCacheT simply wraps System.Collections.Concurrent.ConcurrentDictionary class and offers some options for expiring elements.
+    <description>MemoryCacheT.Ex is a simple in-memory cache with eviction options and "ahead-of-eviction" notifications.</description>
+	<summary>
+      MemoryCacheT.Ex extends MemoryCache.Ex, which simply wraps System.Collections.Concurrent.ConcurrentDictionary class and offers some options for expiring elements.
     </summary>
+    <copyright>Copyright 2019</copyright>
+    <tags>caching</tags>
   </metadata>
   <files>
-    <file src="BuildArtifacts\bin\net40\MemoryCacheT.dll" target="lib\net40" />
-    <file src="BuildArtifacts\bin\net40\MemoryCacheT.pdb" target="lib\net40" />
-    <file src="BuildArtifacts\bin\net40\MemoryCacheT.xml" target="lib\net40" />
-
-    <file src="BuildArtifacts\bin\net45\MemoryCacheT.dll" target="lib\net45" />
-    <file src="BuildArtifacts\bin\net45\MemoryCacheT.pdb" target="lib\net45" />
-    <file src="BuildArtifacts\bin\net45\MemoryCacheT.xml" target="lib\net45" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.dll" target="lib\net45" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.pdb" target="lib\net45" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.xml" target="lib\net45" />
   </files>
 </package>
