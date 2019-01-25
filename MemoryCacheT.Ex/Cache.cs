@@ -261,6 +261,21 @@ namespace MemoryCacheT.Ex
             return _cachedItems.TryGetValue(key, out cacheItem);
         }
 
+        public bool TryPeekValue(TKey key, out TValue value)
+        {
+            value = default(TValue);
+            ICacheItem<TValue> cacheItemValue;
+
+            bool result = _cachedItems.TryGetValue(key, out cacheItemValue);
+
+            if (result)
+            {
+                value = cacheItemValue.PeekValue;
+            }
+
+            return result;
+        }
+
         public bool TryUpdate(TKey key, TValue newValue)
         {
             return TryUpdate(key, oldCacheItem => oldCacheItem.CreateNewCacheItem(newValue));
