@@ -1,7 +1,7 @@
-MemoryCacheT
+MemoryCacheT.Ex
 ============
 
-A thread-safe dictionary with eviction options. MemoryCacheT simply wraps System.Collections.Concurrent.ConcurrentDictionary class and offers some options for expiring elements.
+A thread-safe dictionary with multiple eviction options. MemoryCacheT.Ex extends MemoryCacheT which simply wraps System.Collections.Concurrent.ConcurrentDictionary class and offers some options for expiring elements.
 
 _**Feedback is welcome.**_
 
