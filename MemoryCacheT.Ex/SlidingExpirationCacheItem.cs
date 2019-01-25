@@ -52,7 +52,7 @@ namespace MemoryCacheT.Ex
 
         public override bool IsAboutToExpire
         {
-            get { return _dateTimeProvider.UtcNow >= (_lastAccessDateTime + _cacheInterval); } // TODO: Implement time-logic
+            get { return _dateTimeProvider.UtcNow.AddSeconds(_notificationTime) >= (_lastAccessDateTime + _cacheInterval); }
         }
     }
 }

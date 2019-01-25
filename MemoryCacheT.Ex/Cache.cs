@@ -40,7 +40,7 @@ namespace MemoryCacheT.Ex
 
             _cacheItemFactory = cacheItemFactory ?? new DefaultCacheItemFactory().CreateInstance;
 
-            _timer.Elapsed += CheckExpiredItems;
+            _timer.Elapsed += CheckExpiration;
             _timer.Start();
         }
 
@@ -95,12 +95,20 @@ namespace MemoryCacheT.Ex
         public Cache(TimeSpan timerInterval, ICacheItemFactory cacheItemFactory, IEqualityComparer<TKey> keyEqualityComparer)
             : this(new TimerAdapter(), timerInterval, cacheItemFactory.CreateInstance, keyEqualityComparer) { }
 
-        #endregion
+        #endregion Public constructors
 
-
-        private void CheckExpiredItems(object sender, ElapsedEventArgs e)
+        private void CheckExpiration(object sender, ElapsedEventArgs e)
         {
             _timer.Stop();
+
+            CheckAboutToExpire();
+            CheckExpiredItems();
+
+            _timer.Start();
+        }
+
+        private void CheckExpiredItems()
+        {
             IEnumerable<TKey> expiredItemKeys = _cachedItems.Where(item => item.Value.IsExpired)
                                                             .Select(item => item.Key)
                                                             .ToList();
@@ -120,9 +128,23 @@ namespace MemoryCacheT.Ex
                     }
                 }
             }
-            _timer.Start();
         }
 
+        private void CheckAboutToExpire()
+        {
+            IEnumerable<TKey> aboutToexpireItemKeys = _cachedItems.Where(item => item.Value.IsAboutToExpire)
+                                                            .Select(item => item.Key)
+                                                            .ToList();
+
+            foreach (TKey aboutToExpireItemKey in aboutToexpireItemKeys)
+            {
+                ICacheItem<TValue> expiredItem;
+                if (_cachedItems.TryGetValue(aboutToExpireItemKey, out expiredItem))
+                {
+                    expiredItem.AboutToExpire();
+                }
+            }
+        }
 
         public TValue this[TKey key]
         {
@@ -153,7 +175,6 @@ namespace MemoryCacheT.Ex
             get { return false; }
         }
 
-
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             ICacheItem<TValue> cacheItem;
@@ -165,7 +186,6 @@ namespace MemoryCacheT.Ex
         {
             return _cachedItems.ContainsKey(key);
         }
-
 
         public void Add(KeyValuePair<TKey, TValue> keyValuePair)
         {
@@ -201,7 +221,6 @@ namespace MemoryCacheT.Ex
             _cachedItems.Add(key, cacheItem);
         }
 
-
         public bool TryAdd(TKey key, TValue value)
         {
             if ((object)key == null)
@@ -222,7 +241,6 @@ namespace MemoryCacheT.Ex
             return _cachedItems.TryAdd(key, cacheItem);
         }
 
-
         public bool TryGetValue(TKey key, out TValue value)
         {
             value = default(TValue);
@@ -242,7 +260,6 @@ namespace MemoryCacheT.Ex
         {
             return _cachedItems.TryGetValue(key, out cacheItem);
         }
-
 
         public bool TryUpdate(TKey key, TValue newValue)
         {
@@ -273,7 +290,6 @@ namespace MemoryCacheT.Ex
 
             return false;
         }
-
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
@@ -334,7 +350,6 @@ namespace MemoryCacheT.Ex
             return false;
         }
 
-
         public void Clear()
         {
             ICollection<ICacheItem<TValue>> valueList = _cachedItems.Values;
@@ -345,7 +360,6 @@ namespace MemoryCacheT.Ex
                 cacheItem.Remove();
             }
         }
-
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {

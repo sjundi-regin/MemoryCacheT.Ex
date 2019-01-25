@@ -17,6 +17,11 @@ namespace MemoryCacheT.Ex
             _dateTimeProvider = dateTimeProvider;
             _cacheItemValue = value;
             _notificationTime = notificationTime;
+
+            if ((notificationTime != int.MinValue) && (notificationTime < 1))
+            {
+                throw new ArgumentException("Notification time must be at least 1 second");
+            }
         }
 
         public abstract ICacheItem<TValue> CreateNewCacheItem(TValue value);

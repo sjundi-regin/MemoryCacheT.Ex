@@ -48,11 +48,11 @@ namespace MemoryCacheT.Ex
         public override ICacheItem<TValue> CreateNewCacheItem(TValue value)
         {
             return new AbsoluteExpirationCacheItem<TValue>(_dateTimeProvider, value, _expirationDateTime, _notificationTime)
-                {
-                    OnExpire = OnExpire,
-                    OnAboutToExpire = OnAboutToExpire,
-                    OnRemove = OnRemove
-                };
+            {
+                OnExpire = OnExpire,
+                OnAboutToExpire = OnAboutToExpire,
+                OnRemove = OnRemove
+            };
         }
 
         public override TValue Value
@@ -67,7 +67,7 @@ namespace MemoryCacheT.Ex
 
         public override bool IsAboutToExpire
         {
-            get { return _dateTimeProvider.UtcNow >= _expirationDateTime; } // TODO: Implement time-logic
+            get { return _dateTimeProvider.UtcNow.AddSeconds(_notificationTime) >= _expirationDateTime; }
         }
     }
 }
