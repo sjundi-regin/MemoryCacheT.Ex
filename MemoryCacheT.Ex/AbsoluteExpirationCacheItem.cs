@@ -60,6 +60,11 @@ namespace MemoryCacheT.Ex
             get { return _cacheItemValue; }
         }
 
+        public override TValue PeekValue
+        {
+            get { return _cacheItemValue; }
+        }
+
         public override bool IsExpired
         {
             get { return _dateTimeProvider.UtcNow >= _expirationDateTime; }

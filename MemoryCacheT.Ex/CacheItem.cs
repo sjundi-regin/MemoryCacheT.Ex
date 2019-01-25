@@ -28,6 +28,8 @@ namespace MemoryCacheT.Ex
 
         public abstract TValue Value { get; }
 
+        public abstract TValue PeekValue { get; }
+
         public abstract bool IsExpired { get; }
 
         public abstract bool IsAboutToExpire { get; }
