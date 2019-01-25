@@ -12,7 +12,12 @@ namespace MemoryCacheT.Ex
         /// Gets data for the cache item.
         /// </summary>
         TValue Value { get; }
-        
+
+        /// <summary>
+        /// Gets data for the cache item without changing access time.
+        /// </summary>
+        TValue PeekValue { get; }
+
         /// <summary>
         /// Creates a new cache item with the same eviction options, using the provided value.
         /// </summary>
