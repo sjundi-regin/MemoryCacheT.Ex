@@ -2,11 +2,11 @@
 <package >
   <metadata>
     <id>MemoryCacheT.Ex</id>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <authors>Anders Ågren and Daniel Lindström</authors>
     <owners>Anders Ågren and Daniel Lindström</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>https://github.com/motorprinsen/MemoryCacheT.Ex</projectUrl>
+    <projectUrl>https://github.com/sjundi-regin/MemoryCacheT.Ex</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MemoryCacheT.Ex is a simple in-memory cache with eviction options and "ahead-of-eviction" notifications.</description>
 	<summary>
@@ -16,8 +16,8 @@
     <tags>caching</tags>
   </metadata>
   <files>
-    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.dll" target="lib\net45" />
-    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.pdb" target="lib\net45" />
-    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.xml" target="lib\net45" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.dll" target="lib\net48" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.pdb" target="lib\net48" />
+    <file src="MemoryCacheT.Ex\bin\Release\MemoryCacheT.Ex.xml" target="lib\net48" />
   </files>
 </package>
