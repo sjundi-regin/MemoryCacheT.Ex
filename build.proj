@@ -6,7 +6,7 @@
   <Target Name="Build">
 
     <MSBuild Projects=".\MemoryCacheT\MemoryCacheT.csproj"
-             Properties="Configuration=Release;OutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\bin\net45;IntermediateOutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\obj\net45\;TargetFrameworkVersion=v4.5" />
+             Properties="Configuration=Release;OutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\bin\net45;IntermediateOutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\obj\net45\;TargetFrameworkVersion=v4.8" />
 
     <MSBuild Projects=".\MemoryCacheT\MemoryCacheT.csproj"
              Properties="Configuration=Release;OutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\bin\net40;IntermediateOutputPath=$(MSBuildThisFileDirectory)BuildArtifacts\obj\net40\;TargetFrameworkVersion=v4.0" />
