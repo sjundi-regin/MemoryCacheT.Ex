@@ -1,52 +1,107 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# # ASP.NET Core
+# # Build and test ASP.NET Core projects targeting .NET Core.
+# # Add steps that run tests, create a NuGet package, deploy, and more:
+# # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-# the build will trigger on any changes to the master branch
+# # the build will trigger on any changes to the master branch
+# trigger:
+# - master
+
+# # the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
+# pool:
+#   vmImage: 'windows-latest'
+
+# # these variables are available throughout the build file
+# # just the build configuration is defined, in this case we are building Release packages
+# variables:
+#   buildConfiguration: 'Release'
+
+# #The build has 3 seperate tasks run under 1 step
+# steps:
+
+# # The first task is the dotnet command build, pointing to our csproj file
+# - task: DotNetCoreCLI@2
+#   displayName: 'dotnet build'
+#   inputs:
+#     command: 'build'
+#     arguments: '--configuration $(buildConfiguration)'
+#     projects: 'MemoryCacheT.Ex/MemoryCacheT.Ex.csproj'
+
+# # The second task is dotnet pack command again pointing to the csproj file
+# # The nobuild means the project will not be compiled before running pack, because its already built in above step
+# - task: DotNetCoreCLI@2
+#   displayName: "dotnet pack"
+#   inputs:
+#     command: 'pack'
+#     arguments: '--configuration $(buildConfiguration)'
+#     packagesToPack: 'MemoryCacheT.Ex/MemoryCacheT.Ex.csproj'
+#     nobuild: true
+#     versioningScheme: 'off'
+
+# # The last task is a nuget command, nuget push
+# # This will push any .nupkg files to the 'TestFeed' artifact feed
+# # allowPackageConflicts allows us to build the same version and not throw an error when trying to push
+# # instead it just ingores the latest package unless the version changes
+# - task: NuGetCommand@2
+#   displayName: 'nuget push'
+#   inputs:
+#     command: 'push'
+#     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+#     nuGetFeedType: 'internal'
+#     publishVstsFeed: 'efa4e6c2-c620-4e02-bd75-c2975f15b276'
+#     allowPackageConflicts: true
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: $(Major).$(Minor).$(Patch)
+
 trigger:
 - master
 
-# the build will run on a Microsoft hosted agent, using the lastest Windows VM Image
-pool:
-  vmImage: 'windows-latest'
-
-# these variables are available throughout the build file
-# just the build configuration is defined, in this case we are building Release packages
 variables:
-  buildConfiguration: 'Release'
+  BuildConfiguration: Release
+  ArtifactNuGetName: 'MemoryCacheT.Ex'
 
-#The build has 3 seperate tasks run under 1 step
-steps:
-
-# The first task is the dotnet command build, pointing to our csproj file
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build'
-  inputs:
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
-    projects: 'MemoryCacheT.Ex/MemoryCacheT.Ex.csproj'
-
-# The second task is dotnet pack command again pointing to the csproj file
-# The nobuild means the project will not be compiled before running pack, because its already built in above step
-- task: DotNetCoreCLI@2
-  displayName: "dotnet pack"
-  inputs:
-    command: 'pack'
-    arguments: '--configuration $(buildConfiguration)'
-    packagesToPack: 'MemoryCacheT.Ex/MemoryCacheT.Ex.csproj'
-    nobuild: true
-    versioningScheme: 'off'
-
-# The last task is a nuget command, nuget push
-# This will push any .nupkg files to the 'TestFeed' artifact feed
-# allowPackageConflicts allows us to build the same version and not throw an error when trying to push
-# instead it just ingores the latest package unless the version changes
-- task: NuGetCommand@2
-  displayName: 'nuget push'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'efa4e6c2-c620-4e02-bd75-c2975f15b276'
-    allowPackageConflicts: true
+stages:
+- stage: Build
+  displayName: Build NuGet Package
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      name: 'Windows Self-hosted'
+    steps:
+    - task: Assembly-Info-NetCore@3
+      displayName: 'Update assembly info'
+      inputs:
+        Path: '$(Build.SourcesDirectory)'
+        FileNames: '**/*.csproj'
+        InsertAttributes: false
+        FileEncoding: 'auto'
+        WriteBOM: false
+        PackageVersion: '$(Major).$(Minor).$(Patch)'
+        LogLevel: 'verbose'
+        FailOnWarning: false
+        DisableTelemetry: false
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '-c $(BuildConfiguration)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Create nuget packages'
+      inputs:
+        command: 'pack'
+        packagesToPack: '**/*.csproj'
+        packDirectory: '$(Build.ArtifactStagingDirectory)/packages/nuget'
+        nobuild: true
+        versioningScheme: 'byBuildNumber'
+# Push non test NuGet packages from a build to internal organization Feed
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish nuget packages'
+      inputs:
+        command: 'push'
+        searchPatternPush: '$(Build.ArtifactStagingDirectory)/packages/nuget/*.nupkg'
+        feedPublish: 'abregin'
